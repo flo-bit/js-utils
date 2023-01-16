@@ -53,7 +53,7 @@ class Utils {
       if (a[k] == undefined) {
         result[k] = Utils.deepClone(b[k]);
       } else if (Utils.isDict(a[k]) && Utils.isDict(b[k])) {
-        result[k] = Utils.mergeDicts(a[k], b[k]);
+        result[k] = Utils.mergeTwoDicts(a[k], b[k]);
       }
     }
     return result;
@@ -92,5 +92,4 @@ class Utils {
     }
   }
 }
-
 module.exports = Utils;

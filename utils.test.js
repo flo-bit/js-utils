@@ -45,6 +45,23 @@ test("merge", () => {
   expect(Utils.merge(a, b, c)).toEqual({ a: 1, b: 2, c: 3 });
   expect(a).toEqual({ a: 1 });
 
+  expect(Utils.merge({ a: undefined }, { a: 1 })).toEqual({ a: 1 });
+  expect(Utils.merge({ a: 1 }, { b: undefined })).toEqual({
+    a: 1,
+    b: undefined,
+  });
+  let k = Object.keys(Utils.merge({ a: 1 }, { b: undefined }));
+  expect(k).toEqual(["a", "b"]);
+
+  expect(
+    Utils.merge(
+      { a: { data: { hello: 2 } } },
+      { a: { text: "hi", data: { hello: 1, hi: 5 } } }
+    )
+  ).toEqual({ a: { text: "hi", data: { hello: 2, hi: 5 } } });
+});
+
+test("deepClone", () => {
   let d = { a: 1, b: { c: 2 } };
   let cloneD = Utils.deepClone(d);
   cloneD.b.c = 3;
