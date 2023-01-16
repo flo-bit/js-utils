@@ -87,7 +87,7 @@ class Utils {
     if (Utils.isDict(obj)) {
       if (Utils.isNumber(obj.min) && Utils.isNumber(obj.max)) {
         let rng = settings.rng || Math.random;
-        return obj.min + rng * (obj.max - obj.min);
+        return obj.min + rng() * (obj.max - obj.min);
       }
     }
   }
