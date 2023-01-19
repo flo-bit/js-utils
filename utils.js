@@ -125,7 +125,7 @@ class Utils {
     }
     if (Utils.isObject(obj)) {
       if (Utils.isNumber(obj.min) && Utils.isNumber(obj.max)) {
-        let rng = settings.rng || Math.random;
+        let rng = settings.rng ?? Math.random;
         return obj.min + rng() * (obj.max - obj.min);
       }
       if (Utils.isNumber(obj.val)) {
