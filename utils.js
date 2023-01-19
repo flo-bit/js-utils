@@ -91,5 +91,23 @@ class Utils {
       }
     }
   }
+
+  static loadScript(script) {
+    return new Promise((resolve, reject) => {
+      let scriptElement = document.createElement("script");
+      script.src = script;
+      scriptElement.onload = resolve;
+      scriptElement.onerror = reject;
+      document.head.appendChild(scriptElement);
+    });
+  }
+
+  static loadScripts(scripts) {
+    let promises = [];
+    for (let script of scripts) {
+      promises.push(Utils.loadScript(script));
+    }
+    return Promise.all(promises);
+  }
 }
 module.exports = Utils;
