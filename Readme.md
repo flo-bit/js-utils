@@ -1,14 +1,17 @@
 # js-utils
 
-some useful javascript methods
+some useful javascript methods and classes
 
 ## Use
 
 ```html
 <script src="https://flo-bit.github.io/js-utils/utils.js"></script>
+<script src="https://flo-bit.github.io/js-utils/vector.js"></script>
 ```
 
 ## Methods
+
+### Utils
 
 #### Utils.firstDefined
 
@@ -40,3 +43,13 @@ const obj2 = Utils.deepClone(obj);
 obj2.a.b = 2;
 console.log(obj.a.b); // 1
 ```
+
+#### Utils.resolve
+
+#### Utils.combine
+
+#### Utils.loadScript
+
+#### Utils.number
+
+### Vector

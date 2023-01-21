@@ -137,6 +137,10 @@ class Utils {
     }
   }
 
+  static number(obj, settings, defaultVal) {
+    return Utils.getNumber(obj, settings, defaultVal);
+  }
+
   static loadScript(script) {
     return new Promise((resolve, reject) => {
       let scriptElement = document.createElement("script");
@@ -258,6 +262,10 @@ class Utils {
       return result;
     }
     return obj;
+  }
+
+  static resolve(obj, params) {
+    return Utils.resolveFunctions(obj, params);
   }
 }
 module.exports = Utils;
