@@ -46,7 +46,28 @@ console.log(obj.a.b); // 1
 
 #### Utils.resolve
 
+resolve all functions in an object
+
+```js
+const obj = { a: () => 1 };
+Utils.resolve(obj); // { a: 1 }
+
+const obj2 = { a: (n) => n + 1, b: (n) => n * 2 };
+Utils.resolve(obj2, 2); // { a: 3, b: 4 }
+```
+
 #### Utils.combine
+
+```js
+Utils.combine(a, b, (key = "preset"));
+```
+
+if a is not an object turn it into an object with `a[key] = a` return merge of a and `b[a[key]]`
+
+```js
+Utils.combine("a", { a: { b: 3 } }); // { preset: "a", b: 3 }
+Utils.combine({ preset: "a", b: 3, c: 5 }, { a: { b: 10, c: 5 } }); // { preset: "a", b: 3, c: 5 }
+```
 
 #### Utils.loadScript
 

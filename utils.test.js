@@ -146,6 +146,8 @@ test("combineObjects", () => {
     a: 1,
     preset: undefined,
   });
+
+  expect(Utils.combine({ a: "b" }, { b: 1 }, "a")).toEqual({ a: "b" });
 });
 
 test("resolveFunctions", () => {
@@ -175,4 +177,25 @@ test("resolveFunctions", () => {
       1
     )
   ).toEqual([{ c: 3, b: [1, 2, 3] }, 5]);
+
+  expect(Utils.resolveFunctions({ a: 1, b: () => 2 }, 3)).toEqual({
+    a: 1,
+    b: 2,
+  });
+  expect(Utils.resolve({ a: 1, b: "hallo", c: () => "world" })).toEqual({
+    a: 1,
+    b: "hallo",
+    c: "world",
+  });
+  //check what happens for undefeined
+  expect(Utils.resolve({ a: 1, b: "hallo", c: undefined })).toEqual({
+    a: 1,
+    b: "hallo",
+    c: undefined,
+  });
+  expect(Utils.resolve({ a: 1, b: "hallo", c: () => undefined })).toEqual({
+    a: 1,
+    b: "hallo",
+    c: undefined,
+  });
 });
