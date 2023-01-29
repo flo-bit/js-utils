@@ -309,4 +309,5 @@ class Vector {
     return arr;
   }
 }
-module.exports = Vector;
+
+export default Vector;

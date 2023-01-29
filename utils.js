@@ -268,4 +268,5 @@ class Utils {
     return Utils.resolveFunctions(obj, params);
   }
 }
-module.exports = Utils;
+
+export default Utils;
