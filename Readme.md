@@ -4,9 +4,9 @@ some useful javascript methods and classes
 
 ## Use
 
-```html
-<script src="https://flo-bit.github.io/js-utils/utils.js"></script>
-<script src="https://flo-bit.github.io/js-utils/vector.js"></script>
+```js
+import Utils from "https://flo-bit.github.io/js-utils/utils.js";
+import Vector from "https://flo-bit.github.io/js-utils/vector.js";
 ```
 
 ## Methods
