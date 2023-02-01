@@ -192,9 +192,9 @@ class Vector {
     this.mult(l / this.length());
     return this;
   }
-  limit(l) {
-    let length = this.length();
-    if (length > l) this.mult(length / l);
+  limit(maxLength) {
+    let currentLength = this.length();
+    if (currentLength > maxLength) this.mult(maxLength / currentLength);
     return this;
   }
 
