@@ -134,8 +134,8 @@ class Vector {
     }
     this.x /= x ?? 1;
     this.y /= y ?? 1;
-    this.z /= z ?? 1;
-    this.w /= w ?? 1;
+    if (this.z != undefined) this.z /= z ?? 1;
+    if (this.w != undefined) this.w /= w ?? 1;
     return this;
   }
   dot(vec) {
