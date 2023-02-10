@@ -12,15 +12,24 @@ class Vector {
    * @constructor
    */
   constructor(x, y, z, w) {
-    if (x != undefined && typeof x == "object" && x.x != undefined) {
+    this.isVector = true;
+    if (Vector.isVectorObject(x)) {
       this.copy(x);
     } else {
       this.set(x ?? 0, y, z, w);
     }
 
-    this.isVector = true;
     return this;
   }
+
+  static isVectorObject(i) {
+    return i != undefined && typeof i == "object" && Vector.isNumber(i.x);
+  }
+
+  static isNumber(i) {
+    return i != undefined && typeof i == "number" && !isNaN(i);
+  }
+
   copy(vec) {
     this.x = vec.x;
     this.y = vec.y;
@@ -32,37 +41,52 @@ class Vector {
 
   get is2D() {
     return (
-      this.x != undefined &&
-      this.y != undefined &&
-      this.z == undefined &&
-      this.w == undefined
+      Vector.isNumber(this.x) &&
+      Vector.isNumber(this.y) &&
+      !Vector.isNumber(this.z) &&
+      !Vector.isNumber(this.w)
     );
   }
   get is3D() {
     return (
-      this.x != undefined &&
-      this.y != undefined &&
-      this.z != undefined &&
-      this.w == undefined
+      Vector.isNumber(this.x) &&
+      Vector.isNumber(this.y) &&
+      Vector.isNumber(this.z) &&
+      !Vector.isNumber(this.w)
     );
   }
   get is4D() {
     return (
-      this.x != undefined &&
-      this.y != undefined &&
-      this.z != undefined &&
-      this.w != undefined
+      Vector.isNumber(this.x) &&
+      Vector.isNumber(this.y) &&
+      Vector.isNumber(this.z) &&
+      Vector.isNumber(this.w)
+    );
+  }
+
+  get dimension() {
+    if (this.is2D) return 2;
+    if (this.is3D) return 3;
+    if (this.is4D) return 4;
+    return 0;
+  }
+  get isZero() {
+    return (
+      this.x == 0 &&
+      this.y == 0 &&
+      (this.z == 0 || !Vector.isNumber(this.z)) &&
+      (this.w == 0 || !Vector.isNumber(this.w))
     );
   }
 
   clone() {
-    return new Vector(this.x, this.y, this.z, this.w);
+    return new Vector(this);
   }
   set(x, y, z, w) {
-    if (typeof x != "number" && x.x != undefined) {
+    if (Vector.isVectorObject(x)) {
       return this.copy(x);
     }
-    if (y == undefined && z == undefined && w == undefined) {
+    if (!Vector.isNumber(y) && !Vector.isNumber(z) && !Vector.isNumber(w)) {
       if (this.is3D) this.set(x, x, x);
       else if (this.is4D) this.set(x, x, x, x);
       else this.set(x, x);
@@ -75,10 +99,10 @@ class Vector {
     return this;
   }
   add(x, y, z, w) {
-    if (typeof x != "number" && x.x != undefined) {
+    if (Vector.isVectorObject(x)) {
       return this.add(x.x, x.y, x.z, x.w);
     }
-    if (y == undefined && z == undefined && w == undefined) {
+    if (!Vector.isNumber(y) && !Vector.isNumber(z) && !Vector.isNumber(w)) {
       if (this.is3D) this.add(x, x, x);
       else if (this.is4D) this.add(x, x, x, x);
       else this.add(x, x);
@@ -86,15 +110,15 @@ class Vector {
     }
     this.x += x ?? 0;
     this.y += y ?? 0;
-    this.z += z ?? 0;
-    this.w += w ?? 0;
+    if (Vector.isNumber(this.z)) this.z += z ?? 0;
+    if (Vector.isNumber(this.w)) this.w += w ?? 0;
     return this;
   }
   sub(x, y, z, w) {
-    if (typeof x != "number" && x.x != undefined) {
+    if (Vector.isVectorObject(x)) {
       return this.sub(x.x, x.y, x.z, x.w);
     }
-    if (y == undefined && z == undefined && w == undefined) {
+    if (!Vector.isNumber(y) && !Vector.isNumber(z) && !Vector.isNumber(w)) {
       if (this.is3D) this.sub(x, x, x);
       else if (this.is4D) this.sub(x, x, x, x);
       else this.sub(x, x);
@@ -102,15 +126,15 @@ class Vector {
     }
     this.x -= x ?? 0;
     this.y -= y ?? 0;
-    this.z -= z ?? 0;
-    this.w -= w ?? 0;
+    if (Vector.isNumber(this.z)) this.z -= z ?? 0;
+    if (Vector.isNumber(this.w)) this.w -= w ?? 0;
     return this;
   }
   mult(x, y, z, w) {
-    if (typeof x != "number" && x.x != undefined) {
+    if (Vector.isVectorObject(x)) {
       return this.mult(x.x, x.y, x.z, x.w);
     }
-    if (y == undefined && z == undefined && w == undefined) {
+    if (!Vector.isNumber(y) && !Vector.isNumber(z) && !Vector.isNumber(w)) {
       if (this.is3D) this.mult(x, x, x);
       else if (this.is4D) this.mult(x, x, x, x);
       else this.mult(x, x);
@@ -118,8 +142,8 @@ class Vector {
     }
     this.x *= x ?? 1;
     this.y *= y ?? 1;
-    this.z *= z ?? 1;
-    this.w *= w ?? 1;
+    if (Vector.isNumber(this.z)) this.z *= z ?? 1;
+    if (Vector.isNumber(this.w)) this.w *= w ?? 1;
     return this;
   }
   div(x, y, z, w) {
@@ -139,12 +163,12 @@ class Vector {
     return this;
   }
   dot(vec) {
-    if (vec == undefined) console.warn("dot(vec) requires a vector");
+    if (!Vector.isVectorObject(vec)) console.warn("dot(vec) requires a vector");
     return (
       this.x * vec.x +
       this.y * vec.y +
-      (this.z != undefined ? this.z * vec.z : 0) +
-      (this.w != undefined ? this.w * vec.w : 0)
+      (Vector.isNumber(this.z) ? this.z * vec.z : 0) +
+      (Vector.isNumber(this.w) ? this.w * vec.w : 0)
     );
   }
   // 3D only
@@ -158,20 +182,23 @@ class Vector {
     );
   }
 
-  dist(x, y, z, w) {
-    if (typeof x != "number" && x.x != undefined) {
+  distSquared(x, y, z, w) {
+    if (Vector.isVectorObject(x)) {
       return this.dist(x.x, x.y, x.z, x.w);
     }
     let sum = 0;
-    let dx = this.x - x;
+    let dx = (this.x ?? 0) - (x ?? 0);
     sum += dx * dx;
-    let dy = (this.y || 0) - (y || 0);
+    let dy = (this.y ?? 0) - (y ?? 0);
     sum += dy * dy;
-    let dz = (this.z || 0) - (z || 0);
+    let dz = (this.z ?? 0) - (z ?? 0);
     sum += dz * dz;
-    let dw = (this.w || 0) - (w || 0);
+    let dw = (this.w ?? 0) - (w ?? 0);
     sum += dw * dw;
-    return Math.sqrt(sum);
+    return sum;
+  }
+  dist(x, y, z, w) {
+    return Math.sqrt(this.distSquared(x, y, z, w));
   }
   distance(x, y, z, w) {
     return this.dist(x, y, z, w);
@@ -180,20 +207,25 @@ class Vector {
     return this.dist(x, y, z, w);
   }
   length() {
-    return Math.sqrt(
-      this.x * this.x +
-        this.y * this.y +
-        (this.z || 0) * (this.z || 0) +
-        (this.w || 0) * (this.w || 0)
-    );
+    return this.dist(0, 0, 0, 0);
+  }
+  lengthSquared() {
+    return this.distSquared(0, 0, 0, 0);
   }
 
   setLength(l) {
-    this.mult(l / this.length());
+    let currentLength = this.length();
+    if (currentLength != 0) this.mult(l / currentLength);
+    else console.warn("setLength() can't set length of a zero vector");
+
     return this;
   }
   limit(maxLength) {
     let currentLength = this.length();
+    if (currentLength == 0) {
+      console.warn("limit() can't limit a zero vector");
+      return this;
+    }
     if (currentLength > maxLength) this.mult(maxLength / currentLength);
     return this;
   }
@@ -201,8 +233,29 @@ class Vector {
   abs() {
     this.x = Math.abs(this.x);
     this.y = Math.abs(this.y);
-    this.z = Math.abs(this.z);
-    this.w = Math.abs(this.w);
+    if (Vector.isNumber(this.z)) this.z = Math.abs(this.z);
+    if (Vector.isNumber(this.w)) this.w = Math.abs(this.w);
+    return this;
+  }
+  floor() {
+    this.x = Math.floor(this.x);
+    this.y = Math.floor(this.y);
+    if (Vector.isNumber(this.z)) this.z = Math.floor(this.z);
+    if (Vector.isNumber(this.w)) this.w = Math.floor(this.w);
+    return this;
+  }
+  ceil() {
+    this.x = Math.ceil(this.x);
+    this.y = Math.ceil(this.y);
+    if (Vector.isNumber(this.z)) this.z = Math.ceil(this.z);
+    if (Vector.isNumber(this.w)) this.w = Math.ceil(this.w);
+    return this;
+  }
+  round() {
+    this.x = Math.round(this.x);
+    this.y = Math.round(this.y);
+    if (Vector.isNumber(this.z)) this.z = Math.round(this.z);
+    if (Vector.isNumber(this.w)) this.w = Math.round(this.w);
     return this;
   }
 
@@ -240,6 +293,10 @@ class Vector {
     this.setLength(1);
     return this;
   }
+  normalized() {
+    return this.clone().normalize();
+  }
+
   mag() {
     return this.length();
   }
@@ -309,5 +366,8 @@ class Vector {
     return arr;
   }
 }
+
+// for testing:
+//module.exports = Vector;
 
 export default Vector;
