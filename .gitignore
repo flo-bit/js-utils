@@ -3,3 +3,5 @@
 /package-lock.json
 /package.json
 /coverage/
+mathutils.js
+vector.test.js
