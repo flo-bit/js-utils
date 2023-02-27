@@ -1,6 +1,8 @@
 class Utils {
   static isObject(a) {
-    return a != undefined && a.constructor == Object;
+    return (
+      a != undefined && typeof a === "object" && !Array.isArray(a) && a != null
+    );
   }
   static isDict(a) {
     return Utils.isObject(a);
@@ -268,5 +270,8 @@ class Utils {
     return Utils.resolveFunctions(obj, params);
   }
 }
+
+// for testing:
+//module.exports = Utils;
 
 export default Utils;
