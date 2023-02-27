@@ -48,6 +48,45 @@ class Vector {
     return this;
   }
 
+  applyAxisAngle(axis, angle) {
+    // http://www.euclideanspace.com/maths/geometry/rotations/conversions/angleToQuaternion/index.htm
+
+    axis.normalize();
+    const halfAngle = angle / 2,
+      s = Math.sin(halfAngle);
+
+    let quat = new Vector(
+      axis.x * s,
+      axis.y * s,
+      axis.z * s,
+      Math.cos(halfAngle)
+    );
+    return this.applyQuaternion(quat);
+  }
+
+  applyQuaternion(q) {
+    const x = this.x,
+      y = this.y,
+      z = this.z;
+    const qx = q.x,
+      qy = q.y,
+      qz = q.z,
+      qw = q.w;
+
+    // calculate quat * vector
+    const ix = qw * x + qy * z - qz * y;
+    const iy = qw * y + qz * x - qx * z;
+    const iz = qw * z + qx * y - qy * x;
+    const iw = -qx * x - qy * y - qz * z;
+
+    // calculate result * inverse quat
+    this.x = ix * qw + iw * -qx + iy * -qz - iz * -qy;
+    this.y = iy * qw + iw * -qy + iz * -qx - ix * -qz;
+    this.z = iz * qw + iw * -qz + ix * -qy - iy * -qx;
+
+    return this;
+  }
+
   get is2D() {
     return (
       Vector.isNumber(this.x) &&
@@ -282,7 +321,9 @@ class Vector {
     return Math.atan2(this.x, this.y);
   }
   // 2d only
-  rotate(a) {
+  rotate(a, b) {
+    if (a != undefined && b != undefined) return this.applyAxisAngle(a, b);
+
     if (!this.is2D) console.warn("rotate(a) only supports 2D vectors");
 
     let ca = Math.cos(a);
