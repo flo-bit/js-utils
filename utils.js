@@ -57,7 +57,8 @@ class Utils {
     if (Utils.isArray(a)) return a.map((x) => Utils.deepClone(x));
     if (!Utils.isObject(a)) return a;
 
-    let myClone = {};
+    let myClone = Object.assign(Object.create(Object.getPrototypeOf(a)), a);
+
     for (let k of Object.keys(a)) {
       myClone[k] = Utils.deepClone(a[k]);
     }
