@@ -146,6 +146,9 @@ class Vector {
     if (Vector.isNumber(this.w)) this.w *= w ?? 1;
     return this;
   }
+  multiplyScalar(scalar) {
+    return this.mult(scalar);
+  }
   div(x, y, z, w) {
     if (typeof x != "number" && x.x != undefined) {
       return this.div(x.x, x.y, x.z, x.w);
@@ -316,6 +319,10 @@ class Vector {
     return this;
   }
 
+  midpoint(vec) {
+    return this.clone().lerp(vec, 0.5);
+  }
+
   stringDescription() {
     let dimension = this.is2D ? "2D" : this.is3D ? "3D" : "4D";
     let str = dimension + " vec (" + this.x + ", " + this.y;
@@ -323,6 +330,21 @@ class Vector {
     if (this.w != undefined) str += ", " + this.w;
     str += ")";
     return str;
+  }
+
+  deepClone() {
+    return Vector.deepClone(this);
+  }
+
+  static deepClone(a) {
+    if (Array.isArray(a)) return a.map((x) => Vector.deepClone(x));
+    if (!(a != undefined && a.constructor == Object)) return a;
+
+    let myClone = {};
+    for (let k of Object.keys(a)) {
+      myClone[k] = Vector.deepClone(a[k]);
+    }
+    return myClone;
   }
 
   // 2d vector from angle and optional length (default length 1)
@@ -364,6 +386,116 @@ class Vector {
     }
     arr.push(b.clone());
     return arr;
+  }
+
+  static between(...args) {
+    if (args.length == 0) return;
+
+    let sum = args[0].clone();
+
+    for (let i = 1; i < args.length; i++) {
+      sum.add(args[i]);
+    }
+
+    return sum.div(args.length);
+  }
+
+  static verticesFromIndices(ver, ind) {
+    let vertices = [];
+    for (let i = 0; i < ind.length; i++) {
+      let vi = ind[i] * 3;
+      vertices.push(new Vector(ver[vi], ver[vi + 1], ver[vi + 2]));
+    }
+    return vertices;
+  }
+
+  static splitFaceAlongLongestSide(a, b, c, array) {
+    array = array ?? [];
+    let ab = a.distanceTo(b);
+    let bc = b.distanceTo(c);
+    let ca = c.distanceTo(a);
+    if (ab > bc && ab > ca) {
+      let mid = b.clone().add(a).divideScalar(2);
+      array.push(
+        a.clone(),
+        mid.clone(),
+        c.clone(),
+        mid.clone(),
+        b.clone(),
+        c.clone()
+      );
+    } else if (bc > ab && bc > ca) {
+      let mid = c.clone().add(b).divideScalar(2);
+      array.push(
+        a.clone(),
+        b.clone(),
+        mid.clone(),
+        mid.clone(),
+        c.clone(),
+        a.clone()
+      );
+    } else {
+      let mid = a.clone().add(c).divideScalar(2);
+      array.push(
+        a.clone(),
+        b.clone(),
+        mid.clone(),
+        b.clone(),
+        c.clone(),
+        mid.clone()
+      );
+    }
+    return array;
+  }
+
+  static subdivideFace(a, b, c, array) {
+    array = array ?? [];
+    let d = Helper.midpoint(a, b);
+    let e = Helper.midpoint(b, c);
+    let f = Helper.midpoint(c, a);
+    array.push(d.clone(), e.clone(), f.clone());
+    array.push(a.clone(), d.clone(), f.clone());
+    array.push(d.clone(), b.clone(), e.clone());
+    array.push(e.clone(), c.clone(), f.clone());
+    return array;
+  }
+
+  static isVectorInFace(a, b, c, v) {
+    var v0 = c.clone().sub(a);
+    var v1 = b.clone().sub(a);
+    var v2 = v.clone().sub(a);
+    var dot00 = v0.dot(v0);
+    var dot01 = v0.dot(v1);
+    var dot02 = v0.dot(v2);
+    var dot11 = v1.dot(v1);
+    var dot12 = v1.dot(v2);
+    var invDenom = 1 / (dot00 * dot11 - dot01 * dot01);
+    var u = (dot11 * dot02 - dot01 * dot12) * invDenom;
+    var v = (dot00 * dot12 - dot01 * dot02) * invDenom;
+    return u >= 0 && v >= 0 && u + v < 1;
+  }
+
+  static randomVectorInFace(a, b, c, random) {
+    random = random ?? Math.random;
+    // Call the corners of the triangle A, B, C, the side vectors AB, BC, AC
+    let ab = b.clone().sub(a);
+    let ac = c.clone().sub(a);
+    // generate two random numbers in [0,1] called u and v.
+    let u = random();
+    let v = random();
+    // Let p = u * AB + v * AC.
+    let p = ab.clone().multiplyScalar(u).add(ac.clone().multiplyScalar(v));
+
+    // If A+p is inside the triangle, return A+p
+    let point = a.clone().add(p);
+
+    // If A+p is outside the triangle, return A + AB + AC - p
+    if (!Vector.isVectorInFace(face, point)) {
+      point.sub(p.multiplyScalar(2));
+      point.add(ab);
+      point.add(ac);
+    }
+    return point;
   }
 }
 
