@@ -198,6 +198,10 @@ class Vector {
     if (Vector.isNumber(this.w)) this.w *= w ?? 1;
     return this;
   }
+  scale(x, y, z, w) {
+    return this.mult(x, y, z, w);
+  }
+
   multiplyScalar(scalar) {
     return this.mult(scalar);
   }
