@@ -450,9 +450,9 @@ class Vector {
 
   static subdivideFace(a, b, c, array) {
     array = array ?? [];
-    let d = Helper.midpoint(a, b);
-    let e = Helper.midpoint(b, c);
-    let f = Helper.midpoint(c, a);
+    let d = Vector.between(a, b);
+    let e = Vector.between(b, c);
+    let f = Vector.between(c, a);
     array.push(d.clone(), e.clone(), f.clone());
     array.push(a.clone(), d.clone(), f.clone());
     array.push(d.clone(), b.clone(), e.clone());
