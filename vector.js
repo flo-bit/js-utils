@@ -13,11 +13,13 @@ class Vector {
    */
   constructor(x, y, z, w) {
     this.isVector = true;
-    if (Vector.isVectorObject(x)) {
-      this.copy(x);
-    } else {
-      this.set(x ?? 0, y, z, w);
+    if (Array.isArray(x)) {
+      return this.set(...x);
     }
+    if (Vector.isVectorObject(x)) {
+      return this.copy(x);
+    }
+    this.set(x ?? 0, y, z, w);
 
     return this;
   }
@@ -28,6 +30,13 @@ class Vector {
 
   static isNumber(i) {
     return i != undefined && typeof i == "number" && !isNaN(i);
+  }
+
+  asArray() {
+    let array = [this.x, this.y];
+    if (Vector.isNumber(this.z)) array.push(this.z);
+    if (Vector.isNumber(this.w)) array.push(this.w);
+    return array;
   }
 
   copy(vec) {
@@ -62,6 +71,10 @@ class Vector {
       Vector.isNumber(this.z) &&
       Vector.isNumber(this.w)
     );
+  }
+
+  get isValid() {
+    return this.is2D || this.is3D || this.is4D;
   }
 
   get dimension() {
@@ -500,6 +513,6 @@ class Vector {
 }
 
 // for testing:
-//module.exports = Vector;
+// module.exports = Vector;
 
 export default Vector;
