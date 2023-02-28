@@ -270,6 +270,13 @@ class Utils {
   static resolve(obj, params) {
     return Utils.resolveFunctions(obj, params);
   }
+
+  static pushArrayToArray(dest, src) {
+    const len = src.length;
+    for (let i = 0; i < len; i++) {
+      dest.push(src[i]);
+    }
+  }
 }
 
 // for testing:
