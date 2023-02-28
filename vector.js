@@ -221,6 +221,11 @@ class Vector {
     if (this.w != undefined) this.w /= w ?? 1;
     return this;
   }
+
+  divideScalar(scalar) {
+    return this.div(scalar);
+  }
+
   dot(vec) {
     if (!Vector.isVectorObject(vec)) console.warn("dot(vec) requires a vector");
     return (
@@ -558,6 +563,6 @@ class Vector {
 }
 
 // for testing:
-// module.exports = Vector;
+//module.exports = Vector;
 
 export default Vector;
