@@ -198,6 +198,9 @@ class Vector {
     if (Vector.isNumber(this.w)) this.w *= w ?? 1;
     return this;
   }
+  multiply(x, y, z, w) {
+    return this.mult(x, y, z, w);
+  }
   scale(x, y, z, w) {
     return this.mult(x, y, z, w);
   }
@@ -221,7 +224,9 @@ class Vector {
     if (this.w != undefined) this.w /= w ?? 1;
     return this;
   }
-
+  divide(x, y, z, w) {
+    return this.div(x, y, z, w);
+  }
   divideScalar(scalar) {
     return this.div(scalar);
   }
