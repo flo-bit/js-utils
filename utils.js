@@ -277,6 +277,9 @@ class Utils {
       dest.push(src[i]);
     }
   }
+  static push(dest, src) {
+    return Utils.pushArrayToArray(dest, src);
+  }
 }
 
 // for testing:
