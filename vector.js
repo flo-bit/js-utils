@@ -253,7 +253,7 @@ class Vector {
 
   distSquared(x, y, z, w) {
     if (Vector.isVectorObject(x)) {
-      return this.dist(x.x, x.y, x.z, x.w);
+      return this.distSquared(x.x, x.y, x.z, x.w);
     }
     let sum = 0;
     let dx = (this.x ?? 0) - (x ?? 0);
